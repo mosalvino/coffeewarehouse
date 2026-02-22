@@ -73,28 +73,30 @@ const AdminPage: React.FC = () => {
         </button>
       </form>
 
-      <h3 className="text-xl font-semibold mt-8 mb-2 text-right">Current Items</h3>
-      {loading ? (
-        <div className="text-gray-500 text-right">Loading...</div>
-      ) : items.length === 0 ? (
-        <div className="text-gray-500 text-right">No items added yet.</div>
-      ) : (
-        <ul className="space-y-2 flex flex-col items-end">
-          {items.map(item => (
-            <li key={item.id} className="flex gap-8 items-center bg-white p-2 rounded shadow w-full max-w-md justify-end">
-              <span className="w-48 font-medium text-right">{item.name}&nbsp;</span>
-              <span className="w-24 text-right">${item.price.toFixed(2)}</span>
-              <button
-                type="button"
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                onClick={() => handleRemoveItem(item.id)}
-              >
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="mt-8 mb-2 flex flex-col items-center">
+        <h3 className="text-xl font-semibold mb-2 text-center">Current Items</h3>
+        {loading ? (
+          <div className="text-gray-500 text-center">Loading...</div>
+        ) : items.length === 0 ? (
+          <div className="text-gray-500 text-center">No items added yet.</div>
+        ) : (
+          <ul className="space-y-2 flex flex-col items-center w-full">
+            {items.map(item => (
+              <li key={item.id} className="flex gap-8 items-center bg-white p-2 rounded shadow w-full max-w-md justify-center">
+                <span className="w-48 font-medium text-center">{item.name}&nbsp;</span>
+                <span className="w-24 text-center">${item.price.toFixed(2)}</span>
+                <button
+                  type="button"
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  onClick={() => handleRemoveItem(item.id)}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
