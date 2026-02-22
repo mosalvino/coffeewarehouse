@@ -2,12 +2,32 @@ import AdminPage from './pages/AdminPage';
 import UserOrderPage from './pages/UserOrderPage';
 import AuthPage from './pages/AuthPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from './supabaseClient';
 import './App.css'
+
+function TopRightNav() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/auth');
+  };
+  // Hide nav on auth page
+  if (location.pathname === '/auth' || location.pathname === '/') return null;
+  return (
+    <div style={{ position: 'fixed', top: 0, right: 0, padding: '1rem', zIndex: 50 }} className="flex gap-2">
+      <button onClick={() => navigate('/order')} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</button>
+      <button onClick={() => navigate('/admin')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</button>
+      <button onClick={handleLogout} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
+    </div>
+  );
+}
 
 function App() {
   return (
     <BrowserRouter>
+      <TopRightNav />
       <div className="min-h-screen bg-gray-100 p-6">
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Coffee Warehouse Dashboard</h1>
