@@ -1,10 +1,7 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import { CoffeeOrderForm } from './components/CoffeeOrderForm';
 import AdminPage from './pages/AdminPage';
 import UserOrderPage from './pages/UserOrderPage';
 import AuthPage from './pages/AuthPage';
+import ProtectedRoute from './components/ProtectedRoute';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css'
 
@@ -18,8 +15,16 @@ function App() {
         </header>
         <main>
           <Routes>
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/order" element={<UserOrderPage />} />
+            <Route path="/admin" element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/order" element={
+              <ProtectedRoute requiredRole={["user", "admin"]}>
+                <UserOrderPage />
+              </ProtectedRoute>
+            } />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/" element={<AuthPage />} />
             <Route path="*" element={<AuthPage />} />
