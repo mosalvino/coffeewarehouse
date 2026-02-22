@@ -33,7 +33,10 @@ const UserOrderPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Order Coffee Items</h2>
+      <div className="flex justify-between mb-4">
+        <h2 className="text-2xl font-bold">Order Coffee Items</h2>
+        <a href="/admin" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</a>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         {loading ? (
           <div>Loading items...</div>

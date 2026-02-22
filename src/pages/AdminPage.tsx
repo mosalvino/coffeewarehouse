@@ -46,7 +46,10 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Admin: Add Coffee Item</h2>
+      <div className="flex justify-between mb-4">
+        <h2 className="text-2xl font-bold">Admin: Add Coffee Item</h2>
+        <a href="/order" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</a>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
