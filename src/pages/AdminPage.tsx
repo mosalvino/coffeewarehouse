@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 export type Item = {
@@ -9,7 +8,6 @@ export type Item = {
 };
 
 const AdminPage: React.FC = () => {
-  const navigate = useNavigate();
   const [items, setItems] = useState<Item[]>([]);
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
@@ -46,19 +44,10 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/auth');
-  };
-
   return (
     <div className="p-6">
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold">Admin: Add Coffee Item</h2>
-        <div className="flex gap-2">
-          <a href="/order" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</a>
-          <button onClick={handleLogout} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
-        </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
