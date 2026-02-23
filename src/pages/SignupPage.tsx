@@ -16,7 +16,7 @@ const SignupPage: React.FC = () => {
     setError('');
     setSuccess('');
     // Sign up user with Supabase
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -30,6 +30,19 @@ const SignupPage: React.FC = () => {
       setError(signUpError.message);
       setLoading(false);
       return;
+    }
+    // Insert profile row
+    const userId = data?.user?.id;
+    if (userId) {
+      await supabase.from('profiles').insert([
+        {
+          id: userId,
+          name,
+          email,
+          stand_name: standName,
+          role: 'user',
+        }
+      ]);
     }
     setSuccess('Signup successful! Please check your email to confirm your account.');
     setLoading(false);
