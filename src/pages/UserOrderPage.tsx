@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import emailjs from '@emailjs/browser';
 
 type Item = {
   id: number;
@@ -11,6 +12,15 @@ const UserOrderPage: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [order, setOrder] = useState<{ [id: number]: number }>({});
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState<string>('');
+  useEffect(() => {
+    // Fetch logged-in user's email
+    const fetchUserEmail = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserEmail(data?.user?.email || '');
+    };
+    fetchUserEmail();
+  }, []);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -28,7 +38,36 @@ const UserOrderPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(JSON.stringify(order, null, 2));
+    // Prepare email parameters
+    const orderDetails = Object.entries(order)
+      .filter(([_, qty]) => qty > 0)
+      .map(([id, qty]) => {
+        const item = items.find(i => i.id === Number(id));
+        return item ? `${item.name} (x${qty})` : '';
+      })
+      .filter(Boolean)
+      .join(', ');
+
+    const templateParams = {
+      order: orderDetails,
+      to_email: userEmail,
+    };
+
+    emailjs
+      .send(
+        'service_kdoh0ix',
+        'template_z2011r9',
+        templateParams,
+        'SFHE49sqOg0Y89zVb'
+      )
+      .then(
+        () => {
+          alert('Order submitted and email sent!');
+        },
+        (error) => {
+          alert('Failed to send email: ' + error.text);
+        }
+      );
   };
 
   return (
