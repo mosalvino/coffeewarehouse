@@ -1,6 +1,7 @@
 import AdminPage from './pages/AdminPage';
 import UserOrderPage from './pages/UserOrderPage';
 import AuthPage from './pages/AuthPage';
+import SignupPage from './pages/SignupPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from './supabaseClient';
@@ -45,6 +46,7 @@ function App() {
                 <UserOrderPage />
               </ProtectedRoute>
             } />
+            <Route path="/signup" element={<SignupPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/" element={<AuthPage />} />
             <Route path="*" element={<AuthPage />} />

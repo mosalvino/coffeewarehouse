@@ -88,6 +88,13 @@ const AuthPage: React.FC = () => {
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded w-full" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
+        <button
+          type="button"
+          className="bg-green-500 text-white px-4 py-2 rounded w-full mt-2"
+          onClick={() => navigate('/signup')}
+        >
+          Sign Up
+        </button>
       </form>
     </div>
   );
