@@ -1,3 +1,4 @@
+import React from 'react';
 import AdminPage from './pages/AdminPage';
 import UserOrderPage from './pages/UserOrderPage';
 import AuthPage from './pages/AuthPage';

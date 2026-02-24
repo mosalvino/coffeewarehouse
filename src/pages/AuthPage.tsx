@@ -29,9 +29,23 @@ const AuthPage: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Custom email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setError(error.message);
+      // Friendly error for invalid email
+      if (error.message.toLowerCase().includes('invalid email')) {
+        setError('Please enter a valid email address.');
+      } else {
+        setError(error.message);
+      }
       setLoading(false);
       return;
     }
@@ -67,8 +81,8 @@ const AuthPage: React.FC = () => {
         </div>
       )}
       <h2 className="text-2xl font-bold mb-4 text-center">Login to Coffee Warehouse</h2>
-      {error && <div className="text-red-500 mb-2 text-center">{error}</div>}
-      <form onSubmit={handleLogin} className="space-y-4">
+      <form onSubmit={handleLogin} className="space-y-4" autoComplete="off" noValidate>
+        {error && <div className="text-red-500 mb-2 text-center">{error}</div>}
         <input
           type="email"
           placeholder="Email"

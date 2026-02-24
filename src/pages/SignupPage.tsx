@@ -15,6 +15,15 @@ const SignupPage: React.FC = () => {
     setLoading(true);
     setError('');
     setSuccess('');
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
+
     // Sign up user with Supabase
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -27,7 +36,14 @@ const SignupPage: React.FC = () => {
       },
     });
     if (signUpError) {
-      setError(signUpError.message);
+      // Friendly error messages for common cases
+      if (signUpError.message.toLowerCase().includes('invalid email')) {
+        setError('Please enter a valid email address.');
+      } else if (signUpError.message.toLowerCase().includes('rate limit')) {
+        setError('Too many signup attempts. Please wait and try again later.');
+      } else {
+        setError(signUpError.message);
+      }
       setLoading(false);
       return;
     }
