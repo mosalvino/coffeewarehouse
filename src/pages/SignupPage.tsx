@@ -34,7 +34,7 @@ const SignupPage: React.FC = () => {
     // Insert profile row
     const userId = data?.user?.id;
     if (userId) {
-      await supabase.from('profiles').insert([
+      const { error: profileError } = await supabase.from('profiles').insert([
         {
           id: userId,
           name,
@@ -43,6 +43,11 @@ const SignupPage: React.FC = () => {
           role: 'user',
         }
       ]);
+      if (profileError) {
+        setError('Profile creation failed: ' + profileError.message);
+        setLoading(false);
+        return;
+      }
     }
     setSuccess('Signup successful! Please check your email to confirm your account.');
     setLoading(false);

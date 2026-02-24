@@ -10,17 +10,36 @@ import './App.css'
 function TopRightNav() {
   const navigate = useNavigate();
   const location = useLocation();
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/auth');
-  };
-  // Hide nav on auth page
+  const [user, setUser] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+    getUser();
+    // Listen for auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => {
+      listener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  // Hide nav on auth or root page
   if (location.pathname === '/auth' || location.pathname === '/') return null;
+
   return (
     <div style={{ position: 'fixed', top: 0, right: 0, padding: '1rem', zIndex: 50 }} className="flex gap-2">
       <button onClick={() => navigate('/order')} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</button>
       <button onClick={() => navigate('/admin')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</button>
-      <button onClick={handleLogout} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
+      {user && (
+        <button onClick={async () => {
+          await supabase.auth.signOut();
+          navigate('/auth');
+        }} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
+      )}
     </div>
   );
 }
