@@ -8,7 +8,7 @@ const AuthPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [setUser] = useState<any>(null);
+  const [, setUser] = useState<any>(null);
 
   React.useEffect(() => {
     const getUser = async () => {
