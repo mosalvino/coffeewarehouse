@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import AdminPage from './pages/AdminPage';
+import AdminOnlyPage from './pages/AdminOnlyPage';
 import UserOrderPage from './pages/UserOrderPage';
 import AuthPage from './pages/AuthPage';
 import SignupPage from './pages/SignupPage';
@@ -13,15 +14,36 @@ const TopRightNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user || null);
+      if (data?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+        setRole(profile?.role || null);
+      } else {
+        setRole(null);
+      }
     };
     getUser();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      if (session?.user) {
+        supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single()
+          .then(({ data: profile }) => setRole(profile?.role || null));
+      } else {
+        setRole(null);
+      }
     });
     return () => {
       listener?.subscription?.unsubscribe();
@@ -30,6 +52,7 @@ const TopRightNav: React.FC = () => {
 
   const handleGoOrder = useCallback(() => navigate('/order'), [navigate]);
   const handleGoAdmin = useCallback(() => navigate('/admin'), [navigate]);
+  const handleGoAdminOnly = useCallback(() => navigate('/admin-only'), [navigate]);
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut();
     navigate('/auth');
@@ -46,6 +69,9 @@ const TopRightNav: React.FC = () => {
       )}
       <button onClick={handleGoOrder} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</button>
       <button onClick={handleGoAdmin} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</button>
+      {role === 'admin' && (
+        <button onClick={handleGoAdminOnly} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Tic Tac Toe (Admin)</button>
+      )}
       {user && (
         <button onClick={handleLogout} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
       )}
@@ -67,6 +93,11 @@ const App: React.FC = () => {
             <Route path="/admin" element={
               <ProtectedRoute requiredRole="admin">
                 <AdminPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin-only" element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminOnlyPage />
               </ProtectedRoute>
             } />
             <Route path="/order" element={
