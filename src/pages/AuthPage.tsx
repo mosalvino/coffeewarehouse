@@ -67,19 +67,8 @@ const AuthPage: React.FC = () => {
     setLoading(false);
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    navigate('/auth');
-  };
-
   return (
     <div className="p-6 max-w-md mx-auto">
-      {user && (
-        <div className="flex justify-end mb-2">
-          <button onClick={handleLogout} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
-        </div>
-      )}
       <h2 className="text-2xl font-bold mb-4 text-center">Login to Coffee Warehouse</h2>
       <form onSubmit={handleLogin} className="space-y-4" autoComplete="off" noValidate>
         {error && <div className="text-red-500 mb-2 text-center">{error}</div>}

@@ -32,7 +32,10 @@ function TopRightNav() {
   if (location.pathname === '/auth' || location.pathname === '/') return null;
 
   return (
-    <div style={{ position: 'fixed', top: 0, right: 0, padding: '1rem', zIndex: 50 }} className="flex gap-2">
+    <div style={{ position: 'fixed', top: 0, right: 0, padding: '1rem', zIndex: 50, display: 'flex', alignItems: 'center' }}>
+      {user?.email && (
+        <span style={{ marginRight: '1.5rem' }} className="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm font-medium">Logged in as: <span className="font-semibold">{user.email}</span></span>
+      )}
       <button onClick={() => navigate('/order')} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</button>
       <button onClick={() => navigate('/admin')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</button>
       {user && (
