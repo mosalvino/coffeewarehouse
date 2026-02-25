@@ -38,16 +38,14 @@ const TopRightNav: React.FC = () => {
   if (location.pathname === '/auth' || location.pathname === '/') return null;
 
   return (
-    <div className="fixed top-0 right-0 p-4 z-50 flex items-center gap-3">
+    <div className="nav-bar">
       {user?.email && (
-        <span className="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm font-medium mr-6">
-          Logged in as: <span className="font-semibold">{user.email}</span>
-        </span>
+        <span className="nav-user">Logged in as: <span className="nav-user-email">{user.email}</span></span>
       )}
-      <button onClick={handleGoOrder} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</button>
-      <button onClick={handleGoAdmin} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</button>
+      <button onClick={handleGoOrder} className="nav-btn nav-btn-gray">Go to Order Page</button>
+      <button onClick={handleGoAdmin} className="nav-btn nav-btn-gray">Go to Admin Page</button>
       {user && (
-        <button onClick={handleLogout} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
+        <button onClick={handleLogout} className="nav-btn nav-btn-gray">Logout</button>
       )}
     </div>
   );

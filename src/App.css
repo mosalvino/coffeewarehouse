@@ -1,3 +1,57 @@
+/* Navigation bar styles (replaces Tailwind) */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.08);
+  border-bottom-left-radius: 16px;
+}
+.nav-user {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-right: 18px;
+}
+.nav-user-email {
+  font-weight: 600;
+}
+.nav-btn {
+  border-radius: 8px;
+  border: none;
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nav-btn-green {
+  background: #22c55e;
+}
+.nav-btn-green:hover {
+  background: #16a34a;
+}
+.nav-btn-blue {
+  background: #3b82f6;
+}
+.nav-btn-blue:hover {
+  background: #2563eb;
+}
+.nav-btn-gray {
+  background: #6b7280;
+}
+.nav-btn-gray:hover {
+  background: #374151;
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;
