@@ -73,7 +73,9 @@ const UserOrderPage: React.FC = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-bold">Order Coffee Items</h2>
+          <div className="mb-4" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <h2 style={{ textAlign: 'center', width: '100%' }}>Order Coffee Items</h2>
+          </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         {loading ? (
