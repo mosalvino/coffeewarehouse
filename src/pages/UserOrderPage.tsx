@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import emailjs from '@emailjs/browser';
 
@@ -12,9 +13,9 @@ const UserOrderPage: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [order, setOrder] = useState<{ [id: number]: number }>({});
   const [loading, setLoading] = useState(true);
-  const [userEmail, setUserEmail] = useState<string>('');
+  const [userEmail, setUserEmail] = useState('');
+
   useEffect(() => {
-    // Fetch logged-in user's email
     const fetchUserEmail = async () => {
       const { data } = await supabase.auth.getUser();
       setUserEmail(data?.user?.email || '');
@@ -32,13 +33,12 @@ const UserOrderPage: React.FC = () => {
     fetchItems();
   }, []);
 
-  const handleChange = (id: number, value: number) => {
-    setOrder({ ...order, [id]: value });
-  };
+  const handleChange = useCallback((id: number, value: number) => {
+    setOrder(prev => ({ ...prev, [id]: value }));
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Prepare email parameters
     const orderDetails = Object.entries(order)
       .filter(([_, qty]) => qty > 0)
       .map(([id, qty]) => {
@@ -68,14 +68,12 @@ const UserOrderPage: React.FC = () => {
           alert('Failed to send email: ' + error.text);
         }
       );
-  };
+  }, [order, items, userEmail]);
 
   return (
     <div className="p-6">
-      <div className="flex justify-between mb-4">
-          <div className="mb-4" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <h2 style={{ textAlign: 'center', width: '100%' }}>Order Coffee Items</h2>
-          </div>
+      <div className="mb-6 flex justify-center w-full">
+        <h2 className="text-2xl font-bold text-center w-full">Order Coffee Items</h2>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         {loading ? (

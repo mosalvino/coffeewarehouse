@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect, useState, useCallback } from 'react';
 import AdminPage from './pages/AdminPage';
 import UserOrderPage from './pages/UserOrderPage';
 import AuthPage from './pages/AuthPage';
@@ -6,20 +7,19 @@ import SignupPage from './pages/SignupPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from './supabaseClient';
-import './App.css'
+import './App.css';
 
-function TopRightNav() {
+const TopRightNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = React.useState<any>(null);
+  const [user, setUser] = useState<any>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user || null);
     };
     getUser();
-    // Listen for auth changes
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
     });
@@ -28,31 +28,36 @@ function TopRightNav() {
     };
   }, []);
 
-  // Hide nav on auth or root page
+  const handleGoOrder = useCallback(() => navigate('/order'), [navigate]);
+  const handleGoAdmin = useCallback(() => navigate('/admin'), [navigate]);
+  const handleLogout = useCallback(async () => {
+    await supabase.auth.signOut();
+    navigate('/auth');
+  }, [navigate]);
+
   if (location.pathname === '/auth' || location.pathname === '/') return null;
 
   return (
-    <div style={{ position: 'fixed', top: 0, right: 0, padding: '1rem', zIndex: 50, display: 'flex', alignItems: 'center' }}>
+    <div className="fixed top-0 right-0 p-4 z-50 flex items-center gap-3">
       {user?.email && (
-        <span style={{ marginRight: '1.5rem' }} className="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm font-medium">Logged in as: <span className="font-semibold">{user.email}</span></span>
+        <span className="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm font-medium mr-6">
+          Logged in as: <span className="font-semibold">{user.email}</span>
+        </span>
       )}
-      <button onClick={() => navigate('/order')} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</button>
-      <button onClick={() => navigate('/admin')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</button>
+      <button onClick={handleGoOrder} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Go to Order Page</button>
+      <button onClick={handleGoAdmin} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Go to Admin Page</button>
       {user && (
-        <button onClick={async () => {
-          await supabase.auth.signOut();
-          navigate('/auth');
-        }} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
+        <button onClick={handleLogout} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</button>
       )}
     </div>
   );
-}
+};
 
-function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
       <TopRightNav />
-      <div className="min-h-screen bg-gray-100 p-6">
+        <div className="min-h-screen bg-gray-100 p-6" style={{ paddingTop: '50px' }}>
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Coffee Warehouse Dashboard</h1>
           <p className="text-gray-600 mt-1">Create and manage coffee orders efficiently</p>
@@ -79,6 +84,6 @@ function App() {
       </div>
     </BrowserRouter>
   );
-}
+};
 
-export default App
+export default App;

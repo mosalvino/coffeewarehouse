@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,16 +8,16 @@ const AuthPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
   const [, setUser] = useState<any>(null);
+  const navigate = useNavigate();
 
-  React.useEffect(() => {
+
+  useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user || null);
     };
     getUser();
-    // Listen for auth changes
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
     });
@@ -25,51 +26,61 @@ const AuthPage: React.FC = () => {
     };
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
 
-    // Custom email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address.');
-      setLoading(false);
-      return;
-    }
+  const handleLogin = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setLoading(true);
+      setError('');
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      // Friendly error for invalid email
-      if (error.message.toLowerCase().includes('invalid email')) {
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
         setError('Please enter a valid email address.');
-      } else {
-        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        if (error.message.toLowerCase().includes('invalid email')) {
+          setError('Please enter a valid email address.');
+        } else {
+          setError(error.message);
+        }
+        setLoading(false);
+        return;
+      }
+
+      const userId = data?.user?.id;
+      if (userId) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', userId)
+          .single();
+        if (!profileError && profile) {
+          if (profile.role === 'admin') navigate('/admin');
+          else navigate('/order');
+        } else {
+          setError('Could not fetch user role.');
+        }
       }
       setLoading(false);
-      return;
-    }
-    // Fetch user role
-    const userId = data?.user?.id;
-    if (userId) {
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single();
-      if (!profileError && profile) {
-        if (profile.role === 'admin') navigate('/admin');
-        else navigate('/order');
-      } else {
-        setError('Could not fetch user role.');
-      }
-    }
-    setLoading(false);
-  };
+    },
+    [email, password, navigate]
+  );
+
+  const handleSignupRedirect = useCallback(() => {
+    navigate('/signup');
+  }, [navigate]);
 
   return (
     <div className="p-6 max-w-md mx-auto">
+      {/* Header */}
       <h2 className="text-2xl font-bold mb-4 text-center">Login to Coffee Warehouse</h2>
+
+      {/* Login Form */}
       <form onSubmit={handleLogin} className="space-y-4" autoComplete="off" noValidate>
         {error && <div className="text-red-500 mb-2 text-center">{error}</div>}
         <input
@@ -88,13 +99,17 @@ const AuthPage: React.FC = () => {
           className="border p-2 rounded w-full"
           required
         />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded w-full" disabled={loading}>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded w-full disabled:opacity-60"
+          disabled={loading}
+        >
           {loading ? 'Logging in...' : 'Login'}
         </button>
         <button
           type="button"
           className="bg-green-500 text-white px-4 py-2 rounded w-full mt-2"
-          onClick={() => navigate('/signup')}
+          onClick={handleSignupRedirect}
         >
           Sign Up
         </button>

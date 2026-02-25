@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 
 const SignupPage: React.FC = () => {
@@ -10,13 +11,12 @@ const SignupPage: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setSuccess('');
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address.');
@@ -24,7 +24,6 @@ const SignupPage: React.FC = () => {
       return;
     }
 
-    // Sign up user with Supabase
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -36,7 +35,6 @@ const SignupPage: React.FC = () => {
       },
     });
     if (signUpError) {
-      // Friendly error messages for common cases
       if (signUpError.message.toLowerCase().includes('invalid email')) {
         setError('Please enter a valid email address.');
       } else if (signUpError.message.toLowerCase().includes('rate limit')) {
@@ -47,7 +45,7 @@ const SignupPage: React.FC = () => {
       setLoading(false);
       return;
     }
-    // Insert profile row
+
     const userId = data?.user?.id;
     if (userId) {
       const { error: profileError } = await supabase.from('profiles').insert([
@@ -67,7 +65,7 @@ const SignupPage: React.FC = () => {
     }
     setSuccess('Signup successful! Please check your email to confirm your account.');
     setLoading(false);
-  };
+  }, [name, email, standName, password]);
 
   return (
     <div className="p-6 max-w-md mx-auto">
@@ -107,7 +105,11 @@ const SignupPage: React.FC = () => {
           className="border p-2 rounded w-full"
           required
         />
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded w-full" disabled={loading}>
+        <button
+          type="submit"
+          className="bg-green-500 text-white px-4 py-2 rounded w-full disabled:opacity-60"
+          disabled={loading}
+        >
           {loading ? 'Signing up...' : 'Sign Up'}
         </button>
       </form>
