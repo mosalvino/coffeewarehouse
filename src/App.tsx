@@ -13,15 +13,36 @@ const TopRightNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const getUser = async () => {
+    const getUserAndRole = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user || null);
+      if (data?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+        setRole(profile?.role || null);
+      } else {
+        setRole(null);
+      }
     };
-    getUser();
+    getUserAndRole();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      if (session?.user) {
+        supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single()
+          .then(({ data: profile }) => setRole(profile?.role || null));
+      } else {
+        setRole(null);
+      }
     });
     return () => {
       listener?.subscription?.unsubscribe();
@@ -44,7 +65,9 @@ const TopRightNav: React.FC = () => {
       )}
       <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
         <button onClick={handleGoOrder} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Order Page</button>
-        <button onClick={handleGoAdmin} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Admin Page</button>
+        {role === 'admin' && (
+          <button onClick={handleGoAdmin} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Admin Page</button>
+        )}
         {user && (
           <button onClick={handleLogout} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}>Logout</button>
         )}

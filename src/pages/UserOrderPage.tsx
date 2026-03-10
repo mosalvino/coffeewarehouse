@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
-import emailjs from '@emailjs/browser';
+import emailjs from '@emailjs/browser'; // Used for sending order emails
 
 type Item = {
   id: number;
   name: string;
   price: number;
+  category: string;
 };
 
 const UserOrderPage: React.FC = () => {
@@ -70,32 +71,63 @@ const UserOrderPage: React.FC = () => {
       );
   }, [order, items, userEmail]);
 
+  // Accordion state
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
+
+  // Group items by category
+  const categories = [
+    { key: 'coffee', label: 'Coffee' },
+    { key: 'syrups', label: 'Syrups' },
+    { key: 'sodas', label: 'Sodas' },
+    { key: 'filters', label: 'Filters' }
+  ];
+  const itemsByCategory: { [key: string]: Item[] } = {};
+  categories.forEach(cat => {
+    itemsByCategory[cat.key] = items.filter(item => item.category === cat.key);
+  });
+
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ maxWidth: 600, margin: '0 auto', padding: 24 }}>
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center', width: '100%' }}>
         <h2 style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', width: '100%' }}>Order Coffee Items</h2>
       </div>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {loading ? (
-          <div>Loading items...</div>
-        ) : items.length === 0 ? (
-          <div>No items available.</div>
+          <div style={{ color: '#888', textAlign: 'center' }}>Loading items...</div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
-            {items.map(item => (
-              <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 16, alignItems: 'center', background: '#222', color: '#fff', padding: 12, borderRadius: 4, boxShadow: '0 2px 8px #0002', width: '100%', maxWidth: 400 }}>
-                <span style={{ fontWeight: 'bold', textAlign: 'left' }}>{item.name}</span>
-                <span style={{ textAlign: 'center' }}>${item.price.toFixed(2)}</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={order[item.id] || 0}
-                  onChange={e => handleChange(item.id, Number(e.target.value))}
-                  style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: 60, textAlign: 'right' }}
-                />
-              </div>
-            ))}
-          </div>
+          categories.map(cat => (
+            <div key={cat.key} style={{ marginBottom: 16, border: '1px solid #222', borderRadius: 4, background: '#181818' }}>
+              <button
+                type="button"
+                style={{ width: '100%', background: '#222', color: '#fff', padding: '12px 16px', border: 'none', borderRadius: '4px 4px 0 0', fontWeight: 600, textAlign: 'left', cursor: 'pointer' }}
+                onClick={() => setOpenCategory(openCategory === cat.key ? null : cat.key)}
+              >
+                {cat.label} ({itemsByCategory[cat.key]?.length || 0})
+                <span style={{ float: 'right' }}>{openCategory === cat.key ? '▲' : '▼'}</span>
+              </button>
+              {openCategory === cat.key && (
+                itemsByCategory[cat.key]?.length === 0 ? (
+                  <div style={{ background: '#222', color: '#bbb', padding: 16, borderRadius: '0 0 4px 4px' }}>No items in this category.</div>
+                ) : (
+                  <ul style={{ background: '#222', color: '#fff', padding: 16, borderRadius: '0 0 4px 4px', listStyle: 'none', margin: 0 }}>
+                    {itemsByCategory[cat.key].map(item => (
+                      <li key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                        <span style={{ flex: 2 }}>{item.name}</span>
+                        <span style={{ flex: 1, textAlign: 'center' }}>${item.price.toFixed(2)}</span>
+                        <input
+                          type="number"
+                          min={0}
+                          value={order[item.id] || 0}
+                          onChange={e => handleChange(item.id, Number(e.target.value))}
+                          style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: 60, textAlign: 'right' }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )
+              )}
+            </div>
+          ))
         )}
         <button type="submit" style={{ background: '#388e3c', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none' }}>
           Submit Order
