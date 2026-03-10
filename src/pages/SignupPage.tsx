@@ -68,17 +68,17 @@ const SignupPage: React.FC = () => {
   }, [name, email, standName, password]);
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center">Sign Up for Coffee Warehouse</h2>
-      {error && <div className="text-red-500 mb-2 text-center">{error}</div>}
-      {success && <div className="text-green-500 mb-2 text-center">{success}</div>}
-      <form onSubmit={handleSignup} className="space-y-4">
+    <div style={{ padding: 24, maxWidth: 400, margin: '0 auto' }}>
+      <h2 style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' }}>Sign Up for Coffee Warehouse</h2>
+      {error && <div style={{ color: '#d32f2f', marginBottom: 8, textAlign: 'center' }}>{error}</div>}
+      {success && <div style={{ color: '#388e3c', marginBottom: 8, textAlign: 'center' }}>{success}</div>}
+      <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <input
           type="text"
           placeholder="Your Name"
           value={name}
           onChange={e => setName(e.target.value)}
-          className="border p-2 rounded w-full"
+          style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: '100%' }}
           required
         />
         <input
@@ -86,7 +86,7 @@ const SignupPage: React.FC = () => {
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="border p-2 rounded w-full"
+          style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: '100%' }}
           required
         />
         <input
@@ -94,7 +94,7 @@ const SignupPage: React.FC = () => {
           placeholder="Coffee Stand Name"
           value={standName}
           onChange={e => setStandName(e.target.value)}
-          className="border p-2 rounded w-full"
+          style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: '100%' }}
           required
         />
         <input
@@ -102,12 +102,12 @@ const SignupPage: React.FC = () => {
           placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="border p-2 rounded w-full"
+          style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: '100%' }}
           required
         />
         <button
           type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded w-full disabled:opacity-60"
+          style={{ background: '#388e3c', color: '#fff', padding: '8px 16px', borderRadius: 4, width: '100%', opacity: loading ? 0.6 : 1, border: 'none' }}
           disabled={loading}
         >
           {loading ? 'Signing up...' : 'Sign Up'}

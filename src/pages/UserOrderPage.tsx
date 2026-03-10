@@ -71,33 +71,33 @@ const UserOrderPage: React.FC = () => {
   }, [order, items, userEmail]);
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex justify-center w-full">
-        <h2 className="text-2xl font-bold text-center w-full">Order Coffee Items</h2>
+    <div style={{ padding: 24 }}>
+      <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <h2 style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', width: '100%' }}>Order Coffee Items</h2>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {loading ? (
           <div>Loading items...</div>
         ) : items.length === 0 ? (
           <div>No items available.</div>
         ) : (
-          <div className="space-y-2 flex flex-col items-center">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
             {items.map(item => (
-              <div key={item.id} className="grid grid-cols-3 gap-6 items-center bg-white p-3 rounded shadow w-full max-w-md">
-                <span className="font-medium text-left col-span-1">{item.name}</span>
-                <span className="text-center col-span-1">${item.price.toFixed(2)}</span>
+              <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 16, alignItems: 'center', background: '#222', color: '#fff', padding: 12, borderRadius: 4, boxShadow: '0 2px 8px #0002', width: '100%', maxWidth: 400 }}>
+                <span style={{ fontWeight: 'bold', textAlign: 'left' }}>{item.name}</span>
+                <span style={{ textAlign: 'center' }}>${item.price.toFixed(2)}</span>
                 <input
                   type="number"
                   min={0}
                   value={order[item.id] || 0}
                   onChange={e => handleChange(item.id, Number(e.target.value))}
-                  className="border p-2 rounded w-20 text-right col-span-1"
+                  style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: 60, textAlign: 'right' }}
                 />
               </div>
             ))}
           </div>
         )}
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
+        <button type="submit" style={{ background: '#388e3c', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none' }}>
           Submit Order
         </button>
       </form>

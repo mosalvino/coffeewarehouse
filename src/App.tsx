@@ -38,14 +38,14 @@ const TopRightNav: React.FC = () => {
   if (location.pathname === '/auth' || location.pathname === '/') return null;
 
   return (
-    <div className="nav-bar">
+    <div style={{ background: '#222', color: '#fff', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 10 }}>
       {user?.email && (
-        <span className="nav-user">Logged in as: <span className="nav-user-email">{user.email}</span></span>
+        <span style={{ fontWeight: 500 }}>Logged in as: <span style={{ fontWeight: 400 }}>{user.email}</span></span>
       )}
-      <button onClick={handleGoOrder} className="nav-btn nav-btn-gray">Go to Order Page</button>
-      <button onClick={handleGoAdmin} className="nav-btn nav-btn-gray">Go to Admin Page</button>
+      <button onClick={handleGoOrder} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Order Page</button>
+      <button onClick={handleGoAdmin} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Admin Page</button>
       {user && (
-        <button onClick={handleLogout} className="nav-btn nav-btn-gray">Logout</button>
+        <button onClick={handleLogout} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}>Logout</button>
       )}
     </div>
   );
@@ -55,10 +55,10 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <TopRightNav />
-        <div className="min-h-screen bg-gray-100 p-6" style={{ paddingTop: '50px' }}>
-        <header className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Coffee Warehouse Dashboard</h1>
-          <p className="text-gray-600 mt-1">Create and manage coffee orders efficiently</p>
+        <div style={{ minHeight: '100vh', background: '#181818', padding: 24, paddingTop: 50 }}>
+        <header style={{ marginBottom: 24 }}>
+          <h1 style={{ fontSize: 28, fontWeight: 'bold', color: '#fff' }}>Coffee Warehouse Dashboard</h1>
+          <p style={{ color: '#bbb', marginTop: 4 }}>Create and manage coffee orders efficiently</p>
         </header>
         <main>
           <Routes>
@@ -78,7 +78,7 @@ const App: React.FC = () => {
             <Route path="*" element={<AuthPage />} />
           </Routes>
         </main>
-        <footer className="mt-8 text-center text-gray-500 text-sm">&copy; 2026 Coffee Warehouse Inc.</footer>
+        <footer style={{ marginTop: 32, textAlign: 'center', color: '#888', fontSize: 14 }}>&copy; 2026 Coffee Warehouse Inc.</footer>
       </div>
     </BrowserRouter>
   );

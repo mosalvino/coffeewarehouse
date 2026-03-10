@@ -76,19 +76,19 @@ const AuthPage: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div className="p-6 max-w-md mx-auto">
+    <div style={{ padding: 24, maxWidth: 400, margin: '0 auto' }}>
       {/* Header */}
-      <h2 className="text-2xl font-bold mb-4 text-center">Login to Coffee Warehouse</h2>
+      <h2 style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' }}>Login to Coffee Warehouse</h2>
 
       {/* Login Form */}
-      <form onSubmit={handleLogin} className="space-y-4" autoComplete="off" noValidate>
-        {error && <div className="text-red-500 mb-2 text-center">{error}</div>}
+      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }} autoComplete="off" noValidate>
+        {error && <div style={{ color: '#d32f2f', marginBottom: 8, textAlign: 'center' }}>{error}</div>}
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="border p-2 rounded w-full"
+          style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: '100%' }}
           required
         />
         <input
@@ -96,19 +96,19 @@ const AuthPage: React.FC = () => {
           placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="border p-2 rounded w-full"
+          style={{ border: '1px solid #ccc', padding: 8, borderRadius: 4, width: '100%' }}
           required
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded w-full disabled:opacity-60"
+          style={{ background: '#1976d2', color: '#fff', padding: '8px 16px', borderRadius: 4, width: '100%', opacity: loading ? 0.6 : 1, border: 'none' }}
           disabled={loading}
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
         <button
           type="button"
-          className="bg-green-500 text-white px-4 py-2 rounded w-full mt-2"
+          style={{ background: '#388e3c', color: '#fff', padding: '8px 16px', borderRadius: 4, width: '100%', marginTop: 8, border: 'none' }}
           onClick={handleSignupRedirect}
         >
           Sign Up
