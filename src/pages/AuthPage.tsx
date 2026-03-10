@@ -54,11 +54,11 @@ const AuthPage: React.FC = () => {
 
       const userId = data?.user?.id;
       if (userId) {
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', userId)
-          .single();
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', userId)
+            .single();
         if (!profileError && profile) {
           if (profile.role === 'admin') navigate('/admin');
           else navigate('/order');
