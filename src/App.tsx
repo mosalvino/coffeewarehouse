@@ -42,11 +42,13 @@ const TopRightNav: React.FC = () => {
       {user?.email && (
         <span style={{ fontWeight: 500 }}>Logged in as: <span style={{ fontWeight: 400 }}>{user.email}</span></span>
       )}
-      <button onClick={handleGoOrder} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Order Page</button>
-      <button onClick={handleGoAdmin} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Admin Page</button>
-      {user && (
-        <button onClick={handleLogout} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}>Logout</button>
-      )}
+      <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+        <button onClick={handleGoOrder} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Order Page</button>
+        <button onClick={handleGoAdmin} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Admin Page</button>
+        {user && (
+          <button onClick={handleLogout} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}>Logout</button>
+        )}
+      </div>
     </div>
   );
 };
