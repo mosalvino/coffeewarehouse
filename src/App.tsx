@@ -59,17 +59,56 @@ const TopRightNav: React.FC = () => {
   if (location.pathname === '/auth' || location.pathname === '/') return null;
 
   return (
-    <div style={{ background: '#222', color: '#fff', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 10 }}>
+    <div
+      style={{
+        background: '#222',
+        color: '#fff',
+        padding: '12px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10,
+        flexWrap: 'wrap',
+        minWidth: 0,
+      }}
+    >
       {user?.email && (
-        <span style={{ fontWeight: 500 }}>Logged in as: <span style={{ fontWeight: 400 }}>{user.email}</span></span>
+        <span style={{ fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Logged in as: <span style={{ fontWeight: 400 }}>{user.email}</span></span>
       )}
-      <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-        <button onClick={handleGoOrder} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Order Page</button>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginLeft: 'auto',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}
+      >
+        <button
+          onClick={handleGoOrder}
+          style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}
+        >
+          Go to Order Page
+        </button>
         {role === 'admin' && (
-          <button onClick={handleGoAdmin} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4, marginRight: 8 }}>Go to Admin Page</button>
+          <button
+            onClick={handleGoAdmin}
+            style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}
+          >
+            Go to Admin Page
+          </button>
         )}
         {user && (
-          <button onClick={handleLogout} style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}>Logout</button>
+          <button
+            onClick={handleLogout}
+            style={{ background: '#444', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 4 }}
+          >
+            Logout
+          </button>
         )}
       </div>
     </div>
