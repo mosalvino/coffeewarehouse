@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import AdminPage from './pages/AdminPage';
 import UserOrderPage from './pages/UserOrderPage';
+import OrderReviewPage from './pages/OrderReviewPage';
 import AuthPage from './pages/AuthPage';
 import SignupPage from './pages/SignupPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -134,6 +135,11 @@ const App: React.FC = () => {
             <Route path="/order" element={
               <ProtectedRoute requiredRole={["user", "admin"]}>
                 <UserOrderPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/order/review" element={
+              <ProtectedRoute requiredRole={["user", "admin"]}>
+                <OrderReviewPage />
               </ProtectedRoute>
             } />
             <Route path="/signup" element={<SignupPage />} />

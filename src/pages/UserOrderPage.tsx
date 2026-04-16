@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
+import { useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser'; // Used for sending order emails
 
 type Item = {
@@ -29,6 +30,7 @@ const UserOrderPage: React.FC = () => {
   const [userEmail, setUserEmail] = useState('');
   const [openCategory, setOpenCategory] = useState<number | null>(null);
   const [openProducts, setOpenProducts] = useState<Set<number>>(new Set());
+  const navigate = useNavigate();
 
   const toggleProduct = useCallback((productId: number) => {
     setOpenProducts(prev => {
@@ -162,9 +164,18 @@ const UserOrderPage: React.FC = () => {
             </div>
           ))
         )}
-        <button type="submit" style={{ background: '#388e3c', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none' }}>
-          Submit Order
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button type="submit" style={{ flex: 1, background: '#388e3c', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none' }}>
+            Submit Order
+          </button>
+          <button
+            type="button"
+            style={{ flex: 1, background: '#1976d2', color: '#fff', padding: '8px 16px', borderRadius: 4, border: 'none', cursor: 'pointer' }}
+            onClick={() => navigate('/order/review', { state: { order, categories } })}
+          >
+            Review Order
+          </button>
+        </div>
       </form>
     </div>
   );
