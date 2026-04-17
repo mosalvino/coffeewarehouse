@@ -25,7 +25,14 @@ type Category = {
 
 const UserOrderPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [order, setOrder] = useState<{ [itemId: number]: number }>({});
+  const [order, setOrder] = useState<{ [itemId: number]: number }>(() => {
+    try {
+      const saved = sessionStorage.getItem('coffeeOrder');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState('');
   const [openCategory, setOpenCategory] = useState<number | null>(null);
@@ -63,27 +70,31 @@ const UserOrderPage: React.FC = () => {
   }, []);
 
   const handleChange = useCallback((itemId: number, value: number) => {
-    setOrder(prev => ({ ...prev, [itemId]: value }));
+    setOrder(prev => {
+      const next = { ...prev, [itemId]: value };
+      sessionStorage.setItem('coffeeOrder', JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const orderDetails = Object.entries(order)
+    const orderRows = Object.entries(order)
       .filter(([_, qty]) => qty > 0)
       .map(([itemId, qty]) => {
         for (const cat of categories) {
           for (const prod of cat.products ?? []) {
             const found = (prod.items ?? []).find(i => i.id === Number(itemId));
-            if (found) return `${cat.Category} > ${prod.Product} > ${found.item} (x${qty})`;
+            if (found) return `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee">${cat.Category}</td><td style="padding:8px 12px;border-bottom:1px solid #eee">${prod.Product}</td><td style="padding:8px 12px;border-bottom:1px solid #eee">${found.item}</td><td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right"><strong>${qty}</strong></td></tr>`;
           }
         }
         return '';
       })
       .filter(Boolean)
-      .join('\n');
+      .join('');
 
     const templateParams = {
-      order: orderDetails,
+      order_rows: orderRows,
       to_email: userEmail,
     };
 
